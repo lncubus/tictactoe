@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.Assertions.*
+import kotlin.test.assertFailsWith
 
 class PositionTest {
 
@@ -50,4 +50,18 @@ class PositionTest {
         assertEquals(Position(1, 0), Position(-1, 0).abs())
         assertEquals(Position(0, 0), Position(0, 0).abs())
     }
+
+    @Test
+    fun radixError() {
+        assertFailsWith<IllegalArgumentException> {
+            Position.parse("a1", MAX_RADIX + 1)
+        }
+    }
+
+    @Test
+    fun outOfBoardError() {
+        assertEquals(Position(3, 0), Position.parse("a4", 3))
+        assertEquals(null, Position.parse("z1", 15))
+    }
+
 }

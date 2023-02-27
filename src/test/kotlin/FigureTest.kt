@@ -12,8 +12,8 @@ class FigureTest {
 
     @Test
     fun testParse() {
-        assertEquals(Figure.Cross, Figure.Parse('X'))
-        assertEquals(Figure.Zero, Figure.Parse('O'))
+        assertEquals(Figure.Cross, Figure.parse('X'))
+        assertEquals(Figure.Zero, Figure.parse('O'))
     }
 
 }

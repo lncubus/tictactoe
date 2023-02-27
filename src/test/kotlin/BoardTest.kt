@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.Assertions.*
+import kotlin.test.assertFailsWith
 
 class BoardTest {
 
@@ -72,5 +72,19 @@ class BoardTest {
             Position(0,2) to Figure.Cross
         )
         assertEquals(map, board.grid)
+    }
+
+    @Test
+    fun parseWringChars() {
+        assertFailsWith<IllegalArgumentException> {
+            val board = Board.parse("X..XOX..X")
+        }
+    }
+
+    @Test
+    fun parseInvalidLength() {
+        assertFailsWith<IndexOutOfBoundsException> {
+            val board = Board.parse("X  XX  X")
+        }
     }
 }

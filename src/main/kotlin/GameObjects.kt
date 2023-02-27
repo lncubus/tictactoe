@@ -1,7 +1,10 @@
 import kotlin.math.abs
 
-const val N = 3
-const val M = 3
+enum class default(val value: Int) {
+    N(3),
+    M(3),
+}
+
 const val MAX_RADIX = 36
 
 enum class GameResult(val displayName: String) {
@@ -55,7 +58,7 @@ data class Position(val row: Int, val col: Int) {
         val Down = Position(-1, 0)
         val Left = Position(0, -1)
         val Right = Position(0, 1)
-        fun parse(place: CharSequence, n: Int = N): Position? {
+        fun parse(place: CharSequence, n: Int = default.N.value): Position? {
             if (n >= MAX_RADIX)
                 throw IllegalArgumentException("n must be less than $MAX_RADIX")
             val topRow = n.toString(MAX_RADIX).single()
@@ -77,8 +80,8 @@ data class Position(val row: Int, val col: Int) {
     }
 }
 
-data class Board(val grid: Map<Position, Figure>, val n: Int = N) {
-    constructor(n: Int = N) : this(emptyMap<Position, Figure>(), n)
+data class Board(val grid: Map<Position, Figure>, val n: Int = default.N.value) {
+    constructor(n: Int = default.N.value) : this(emptyMap<Position, Figure>(), n)
 
     fun drawBoard(): StringBuilder {
         val answer = StringBuilder()
@@ -125,7 +128,7 @@ data class Board(val grid: Map<Position, Figure>, val n: Int = N) {
     override fun toString() = drawBoard().toString()
 
     companion object {
-        fun parse(board: CharSequence, n: Int = N): Board {
+        fun parse(board: CharSequence, n: Int = default.N.value): Board {
             if (board.length != n * n)
                 throw IndexOutOfBoundsException()
             board.forEach {
@@ -170,7 +173,8 @@ data class Turn(val player: Figure, val act: Act, val point: Position) {
     }
 }
 
-class Victory(private val grid: Map<Position, Figure>) {
+class Victory(private val grid: Map<Position, Figure>,
+    val n: Int = default.N.value, val m: Int = default.M.value) {
     val gameResult: GameResult = calculateResult()
     var winner: Figure? = null
 
@@ -189,8 +193,8 @@ class Victory(private val grid: Map<Position, Figure>) {
             Position.Down + Position.Right,
             Position.Down - Position.Right
         )
-        for (row in N - 1 downTo 0) {
-            for (col in 0 until N) {
+        for (row in n - 1 downTo 0) {
+            for (col in 0 until n) {
                 val position = Position(row, col)
                 val player = grid.getOrDefault(position, null) ?: continue
                 for (delta in directions) {
@@ -199,8 +203,8 @@ class Victory(private val grid: Map<Position, Figure>) {
                         continue
                     var victory = true
                     // check if there is a victory
-                    for (m in M - 1 downTo 1) {
-                        val p = position + delta * m
+                    for (distance in m - 1 downTo 1) {
+                        val p = position + delta * distance
                         if (grid.getOrDefault(p, null) != player) {
                             victory = false
                             break
@@ -213,7 +217,7 @@ class Victory(private val grid: Map<Position, Figure>) {
         }
         val crosses = victories.getOrDefault(Figure.Cross, 0)
         val zeros = victories.getOrDefault(Figure.Zero, 0)
-        val empty = N * N - grid.size
+        val empty = n * n - grid.size
         return when {
             crosses > 0 && zeros > 0 -> GameResult.Impossible
             crosses > 0 -> {

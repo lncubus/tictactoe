@@ -69,4 +69,24 @@ class VictoryTest {
         assertEquals(GameResult.Draw, draw.gameResult)
         assertEquals("Draw", draw.toString())
     }
+
+    @Test
+    fun nobodyWins() {
+        val map = hashMapOf(
+            Position(0, 2) to Figure.Cross,
+            Position(0, 1) to Figure.Cross,
+            Position(0, 0) to Figure.Cross,
+            Position(1, 2) to Figure.Cross,
+            Position(1, 1) to Figure.Cross,
+            Position(1, 0) to Figure.Cross,
+            Position(2, 2) to Figure.Cross,
+            Position(2, 1) to Figure.Cross,
+            Position(2, 0) to Figure.Cross
+        )
+        val draw = Victory(map, 3, 5)
+        assertEquals(null, draw.winner)
+        assertEquals(GameResult.Draw, draw.gameResult)
+        assertEquals("Draw", draw.toString())
+    }
+
 }
